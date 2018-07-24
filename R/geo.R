@@ -453,10 +453,10 @@ static.ggmap <- function(
     quantiles <- unique(stats::quantile(gridded.data.df[[target.chr]],
       probs = seq(0, 1, length.out = 11), na.rm = T))
     labels <- c()
-    breaks <- unique(round(c(-60,
-      min(gridded.data.df[[target.chr]] - 1, na.rm = TRUE),
+    breaks <- unique(round(c(min(gridded.data.df[[target.chr]] - 1, na.rm = TRUE),      min(gridded.data.df[[target.chr]] , na.rm = TRUE),
       quantiles,
       max(gridded.data.df[[target.chr]], na.rm = TRUE)), 1))
+
 
     labels <- paste0(labels, paste0(format(round(breaks, 1), nsmall = 1)))
     labels <- labels[2:length(labels)]
@@ -557,4 +557,86 @@ static.ggmap <- function(
       legend.position = c(0.12,0.38),
       legend.box = "horizontal")
   ggmap
+}
+
+
+#' Build a leaflet map displaying predictions and their related error
+#' @author Thomas Goossens
+#' @param data.sf A sf data frame
+#' @return a leaflet map object
+#' @export
+leafletize <- function(data.sf){
+  # to make the map responsive
+  responsiveness.chr = "\'<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\'"
+
+  # defining the color palette for the response
+  varPal <- leaflet::colorNumeric(
+    palette = "Spectral",
+    domain = data.sf$response
+  )
+
+  # defining the transparent colorpal for the se
+  uncPal <- leaflet::colorNumeric(
+    palette = alphaPal("#e6e6e6"),
+    domain = data.sf$se,
+    alpha = TRUE
+  )
+
+  #
+  prediction.map <- leaflet::leaflet(data.sf) %>%
+    addProviderTiles(group = "Stamen",
+      providers$Stamen.Toner,
+      options = providerTileOptions(opacity = 0.25)
+    ) %>%
+    addProviderTiles(group = "Satellite",
+      providers$Esri.WorldImagery,
+      options = providerTileOptions(opacity = 1)
+    ) %>%
+    fitBounds(sf::st_bbox(data.sf)[[1]],
+      sf::st_bbox(data.sf)[[2]],
+      sf::st_bbox(data.sf)[[3]],
+      sf::st_bbox(data.sf)[[4]]
+    ) %>%
+    addLayersControl(baseGroups = c("Stamen", "Satellite"),
+      overlayGroups = c("prediction", "se"),
+      options = layersControlOptions(collapsed = TRUE)
+    ) %>%
+    addEasyButton(easyButton(
+      icon ="fa-crosshairs", title = "Locate Me",
+      onClick = JS("function(btn, map){ map.locate({setView: true}); }"))) %>%
+    htmlwidgets::onRender(paste0("
+      function(el, x) {
+      $('head').append(",responsiveness.chr,");
+      }")
+    ) %>%
+    addPolygons(
+      group = "prediction",
+      color = "#444444", stroke = FALSE, weight = 1, smoothFactor = 0.5,
+      opacity = 1.0, fillOpacity = 0.9,
+      fillColor = ~varPal(response),
+      highlightOptions = highlightOptions(color = "white", weight = 2,
+        bringToFront = TRUE)
+    ) %>%
+    addLegend(
+      position = "bottomright", pal = varPal, values = ~response,
+      title = "prediction",
+      group = "prediction",
+      opacity = 1
+    ) %>%
+    addPolygons(
+      group = "se",
+      color = "#444444", stroke = FALSE, weight = 1, smoothFactor = 0.5,
+      opacity = 1.0, fillOpacity = 1,
+      fillColor = ~uncPal(se),
+      highlightOptions = highlightOptions(color = "white", weight = 2,
+        bringToFront = TRUE),
+      label = ~ paste("prediction:", signif(data.sf$response, 2), "\n","se: ", signif(data.sf$se, 2))
+    ) %>%
+    addLegend(
+      group = "se",
+      position = "bottomleft", pal = uncPal, values = ~se,
+      title = "se",
+      opacity = 1
+    )
+  return(prediction.map)
 }

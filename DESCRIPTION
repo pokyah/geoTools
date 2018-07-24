@@ -15,4 +15,5 @@ Imports: ggplot2,
     maptools,
     ggsn,
     RColorBrewer,
-    sf
+    sf,
+    leaflet
