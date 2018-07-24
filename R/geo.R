@@ -451,35 +451,35 @@ static.ggmap <- function(
     # prepare legend with pretty breaks
     # compute quantiles from predictions values
     quantiles <- unique(stats::quantile(gridded.data.df[[target.chr]],
-                                 probs = seq(0, 1, length.out = 11), na.rm = T))
+      probs = seq(0, 1, length.out = 11), na.rm = T))
     labels <- c()
     breaks <- unique(round(c(-60,
-                             min(gridded.data.df[[target.chr]], na.rm = TRUE),
-                             quantiles,
-                             max(gridded.data.df[[target.chr]], na.rm = TRUE)), 1))
+      min(gridded.data.df[[target.chr]], na.rm = TRUE),
+      quantiles,
+      max(gridded.data.df[[target.chr]], na.rm = TRUE)), 1))
 
     labels <- paste0(labels, paste0(format(round(breaks, 1), nsmall = 1)))
     labels <- labels[2:length(labels)]
     gridded.data.df$response_quantiles <- cut(gridded.data.df[[target.chr]],
-                                              breaks = breaks,
-                                              labels = labels,
-                                              include.lowest = T)
+      breaks = breaks,
+      labels = labels,
+      include.lowest = T)
     breaks_scale <- levels(gridded.data.df$response_quantiles)
     labels_scale <- rev(breaks_scale)
   }
   if (pretty_breaks.bool == FALSE) {
     # inspired by https://timogrossenbacher.ch/2016/12/beautiful-thematic-maps-with-ggplot2-only/
     quantiles <- unique(stats::quantile(gridded.data.df[[target.chr]],
-                                 probs = seq(0, 1, length.out = 11), na.rm = T))
+      probs = seq(0, 1, length.out = 11), na.rm = T))
     labels <- c()
     labels <- paste0(labels, paste0(format(round(quantiles, 1), nsmall = 1),
-                                    " – ",
-                                    format(round(quantiles[2:length(quantiles)], 1), nsmall = 1)))
+      " – ",
+      format(round(quantiles[2:length(quantiles)], 1), nsmall = 1)))
     labels <- labels[1:length(labels) - 1]
     gridded.data.df$response_quantiles <- cut(gridded.data.df[[target.chr]],
-                                                       breaks = quantiles,
-                                                       labels = labels,
-                                                       include.lowest = T)
+      breaks = quantiles,
+      labels = labels,
+      include.lowest = T)
   }
 
   ggmap <- ggplot2::ggplot(gridded.data.df) +
@@ -521,11 +521,11 @@ static.ggmap <- function(
       ggplot2::geom_raster(ggplot2::aes(coords.x1, coords.x2, alpha = se), fill = "white", na.rm = TRUE, interpolate = TRUE) +
       # whitening it
       ggplot2::scale_alpha_continuous("Standard\nError",range = c(0.1,1), guide = legend.error.bool)
-      # order the two legends if they both are displayed
-      if(legend.error.bool == TRUE){
-        ggmap <- ggmap + ggplot2::guides(fill = ggplot2::guide_legend(order = 1),
-                                alpha = ggplot2::guide_legend(order = 0))
-      }
+    # order the two legends if they both are displayed
+    if(legend.error.bool == TRUE){
+      ggmap <- ggmap + ggplot2::guides(fill = ggplot2::guide_legend(order = 1),
+        alpha = ggplot2::guide_legend(order = 0))
+    }
 
   }
   ggmap <- ggmap +
@@ -533,29 +533,30 @@ static.ggmap <- function(
     # add boundaries layer
     ggplot2::geom_sf(data = boundaries.sf, ggplot2::aes(fill = ISO), fill = NA, color = "black", size = 0.6) +
     # add north symbol
-    ggsn::north(data = boundaries.sf, scale = 0.1, location = "bottomleft",
-                anchor = c(x = 780000, y = 550000), symbol = 12) +
+    ggsn::north(boundaries.sf, scale = 0.1, location = "bottomleft",
+      anchor = c(x = 780000, y = 550000), symbol = 12) +
     # add scalebar
-    ggsn::scalebar(data = boundaries.sf, dist = 50, dd2km = FALSE, model = "GRS80",
-                   st.dist = 0.03, st.size = 4, anchor = c(x = 700000, y = 520000)) +
-
+    ggsn::scalebar(boundaries.sf, dist = 50, dd2km = FALSE, model = "GRS80",
+      st.dist = 0.03, st.size = 4, box.fill = c("black", "white"),
+      box.color = "black", anchor = c(x = 700000, y = 520000)) +
     # add copyright
     ggplot2::annotation_custom(grob = grid::textGrob("© CRA-W"),
-                      xmin = 790000, xmax = 790000, ymin = 520000, ymax = 520000) +
+      xmin = 790000, xmax = 790000, ymin = 520000, ymax = 520000) +
     # display resolution of the map
     ggplot2::annotation_custom(grob = grid::textGrob("Resolution : 1 km²"),
-                      xmin = 558000, xmax = 558000, ymin = 671000, ymax = 671000) +
+      xmin = 558000, xmax = 558000, ymin = 671000, ymax = 671000) +
     # parameters for visualization
     ggplot2::theme(panel.background = ggplot2::element_rect(fill = "white"),
-          axis.title = ggplot2::element_text(color = NA),
-          panel.grid = ggplot2::element_line(color = NA),
-          axis.ticks = ggplot2::element_line(color = NA),
-          axis.text = ggplot2::element_text(colour = NA),
-          legend.title = ggplot2::element_text(size = 12, face = "bold", vjust = 1),
-          legend.text = ggplot2::element_text(size = 11),
-          legend.background = ggplot2::element_rect(fill = "transparent"),
-          legend.position = c(0.12,0.38),
-          legend.box = "horizontal")
+      axis.title = ggplot2::element_text(color = NA),
+      panel.grid = ggplot2::element_line(color = NA),
+      axis.ticks = ggplot2::element_line(color = NA),
+      axis.text = ggplot2::element_text(colour = NA),
+      legend.title = ggplot2::element_text(size = 12, face = "bold", vjust = 1),
+      legend.text = ggplot2::element_text(size = 11, margin(b = 1)),
+      legend.background = ggplot2::element_rect(fill = "transparent"),
+      legend.position = c(0.12,0.38),
+      legend.box = "horizontal")
   ggmap
 }
+
 
