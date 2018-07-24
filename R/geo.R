@@ -435,7 +435,7 @@ build_leaflet_template.fun <- function(records.sf){
 #' @param target.chr A character specifying the predicted parameter. One of "tsa", "hra" or "hct"
 #' @return a ggplot map object
 #' @export
-static.ggmap <- function(
+build.static.ggmap <- function(
   gridded.data.df,
   boundaries.sf,
   layer.error.bool,
@@ -453,10 +453,10 @@ static.ggmap <- function(
     quantiles <- unique(stats::quantile(gridded.data.df[[target.chr]],
       probs = seq(0, 1, length.out = 11), na.rm = T))
     labels <- c()
-    breaks <- unique(round(c(min(gridded.data.df[[target.chr]] - 1, na.rm = TRUE),      min(gridded.data.df[[target.chr]] , na.rm = TRUE),
+    breaks <- unique(round(c(min(gridded.data.df[[target.chr]] - 1, na.rm = TRUE),
+      min(gridded.data.df[[target.chr]], na.rm = TRUE),
       quantiles,
       max(gridded.data.df[[target.chr]], na.rm = TRUE)), 1))
-
 
     labels <- paste0(labels, paste0(format(round(breaks, 1), nsmall = 1)))
     labels <- labels[2:length(labels)]
@@ -489,7 +489,7 @@ static.ggmap <- function(
   if (pretty_breaks.bool == TRUE) {
     ggmap <- ggmap +
       ggplot2::scale_fill_manual(
-        values = rev(RColorBrewer::brewer.pal(n = length(labels_scale), name = "RdYlBu")), # palette to use
+        values = (RColorBrewer::brewer.pal(n = length(labels_scale), name = "RdYlBu")), # palette to use
         breaks = rev(breaks_scale), # legend breaks
         name = legend.chr,
         drop = FALSE,
