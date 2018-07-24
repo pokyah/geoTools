@@ -450,17 +450,17 @@ static.ggmap <- function(
     # inspired by https://timogrossenbacher.ch/2016/12/beautiful-thematic-maps-with-ggplot2-only/
     # prepare legend with pretty breaks
     # compute quantiles from predictions values
-    quantiles <- unique(stats::quantile(gridded.data.df[target.chr],
+    quantiles <- unique(stats::quantile(gridded.data.df[[target.chr]],
                                  probs = seq(0, 1, length.out = 11), na.rm = T))
     labels <- c()
     breaks <- unique(round(c(-60,
-                             min(gridded.data.df[target.chr], na.rm = TRUE),
+                             min(gridded.data.df[[target.chr]], na.rm = TRUE),
                              quantiles,
-                             max(gridded.data.df[target.chr], na.rm = TRUE)), 1))
+                             max(gridded.data.df[[target.chr]], na.rm = TRUE)), 1))
 
     labels <- paste0(labels, paste0(format(round(breaks, 1), nsmall = 1)))
     labels <- labels[2:length(labels)]
-    gridded.data.df$response_quantiles <- cut(gridded.data.df[target.chr],
+    gridded.data.df$response_quantiles <- cut(gridded.data.df[[target.chr]],
                                               breaks = breaks,
                                               labels = labels,
                                               include.lowest = T)
@@ -469,14 +469,14 @@ static.ggmap <- function(
   }
   if (pretty_breaks.bool == FALSE) {
     # inspired by https://timogrossenbacher.ch/2016/12/beautiful-thematic-maps-with-ggplot2-only/
-    quantiles <- unique(stats::quantile(gridded.data.df[target.chr],
+    quantiles <- unique(stats::quantile(gridded.data.df[[target.chr]],
                                  probs = seq(0, 1, length.out = 11), na.rm = T))
     labels <- c()
     labels <- paste0(labels, paste0(format(round(quantiles, 1), nsmall = 1),
                                     " – ",
                                     format(round(quantiles[2:length(quantiles)], 1), nsmall = 1)))
     labels <- labels[1:length(labels) - 1]
-    gridded.data.df$response_quantiles <- cut(gridded.data.df[target.chr],
+    gridded.data.df$response_quantiles <- cut(gridded.data.df[[target.chr]],
                                                        breaks = quantiles,
                                                        labels = labels,
                                                        include.lowest = T)
