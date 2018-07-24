@@ -552,7 +552,7 @@ static.ggmap <- function(
           axis.ticks = ggplot2::element_line(color = NA),
           axis.text = ggplot2::element_text(colour = NA),
           legend.title = ggplot2::element_text(size = 12, face = "bold", vjust = 1),
-          legend.text = ggplot2::element_text(size = 11, margin(b = 1)),
+          legend.text = ggplot2::element_text(size = 11),
           legend.background = ggplot2::element_rect(fill = "transparent"),
           legend.position = c(0.12,0.38),
           legend.box = "horizontal")
