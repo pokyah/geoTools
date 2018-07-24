@@ -562,10 +562,11 @@ build.static.ggmap <- function(
 
 #' Build a leaflet map displaying predictions and their related error
 #' @author Thomas Goossens
-#' @param data.sf A sf data frame
+#' @param data.sf A sf data frame containing the spztilized data
+#' @param se.bool logial specifying wether to display or not the se
 #' @return a leaflet map object
 #' @export
-leafletize <- function(data.sf){
+leafletize <- function(data.sf, se.bool=TRUE){
   # to make the map responsive
   responsiveness.chr = "\'<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\'"
 
@@ -575,14 +576,7 @@ leafletize <- function(data.sf){
     domain = data.sf$response
   )
 
-  # defining the transparent colorpal for the se
-  uncPal <- leaflet::colorNumeric(
-    palette = alphaPal("#e6e6e6"),
-    domain = data.sf$se,
-    alpha = TRUE
-  )
-
-  #
+  # building the map
   prediction.map <- leaflet::leaflet(data.sf) %>%
     addProviderTiles(group = "Stamen",
       providers$Stamen.Toner,
@@ -622,21 +616,33 @@ leafletize <- function(data.sf){
       title = "prediction",
       group = "prediction",
       opacity = 1
-    ) %>%
-    addPolygons(
-      group = "se",
-      color = "#444444", stroke = FALSE, weight = 1, smoothFactor = 0.5,
-      opacity = 1.0, fillOpacity = 1,
-      fillColor = ~uncPal(se),
-      highlightOptions = highlightOptions(color = "white", weight = 2,
-        bringToFront = TRUE),
-      label = ~ paste("prediction:", signif(data.sf$response, 2), "\n","se: ", signif(data.sf$se, 2))
-    ) %>%
-    addLegend(
-      group = "se",
-      position = "bottomleft", pal = uncPal, values = ~se,
-      title = "se",
-      opacity = 1
     )
+
+  # if se.bool = TRUE
+  if (se.bool == TRUE) {
+    uncPal <- leaflet::colorNumeric(
+      palette = alphaPal("#e6e6e6"),
+      domain = data.sf$se,
+      alpha = TRUE
+    )
+
+    prediction.map %>%
+      addPolygons(
+        group = "se",
+        color = "#444444", stroke = FALSE, weight = 1, smoothFactor = 0.5,
+        opacity = 1.0, fillOpacity = 1,
+        fillColor = ~uncPal(se),
+        highlightOptions = highlightOptions(color = "white", weight = 2,
+          bringToFront = TRUE),
+        label = ~ paste("prediction:", signif(data.sf$response, 2), "\n","se: ", signif(data.sf$se, 2))
+      ) %>%
+      addLegend(
+        group = "se",
+        position = "bottomleft", pal = uncPal, values = ~se,
+        title = "se",
+        opacity = 1
+      )
+  }
+
   return(prediction.map)
 }

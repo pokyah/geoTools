@@ -4,10 +4,12 @@
 \alias{leafletize}
 \title{Build a leaflet map displaying predictions and their related error}
 \usage{
-leafletize(data.sf)
+leafletize(data.sf, se.bool = TRUE)
 }
 \arguments{
-\item{data.sf}{A sf data frame}
+\item{data.sf}{A sf data frame containing the spztilized data}
+
+\item{se.bool}{logial specifying wether to display or not the se}
 }
 \value{
 a leaflet map object
