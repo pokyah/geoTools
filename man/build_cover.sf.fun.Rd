@@ -14,6 +14,8 @@ build_cover.sf.fun(country_code.chr, NAME_1.chr, EPSG.chr,
 
 \item{EPSG.chr}{A character specifying the EPSG code of the desired Coordiante Reference System (CRS)}
 
+\item{path.corine.shapefile.chr}{A character specifying the path where th corine shapefiles resides}
+
 \item{EPSG.corine.chr}{A character specifying the EPSG code of the downloaded Corine Data}
 }
 \value{

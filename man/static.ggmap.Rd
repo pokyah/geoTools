@@ -5,7 +5,7 @@
 \title{Build a static map displaying predictions and their related error}
 \usage{
 static.ggmap(gridded.data.df, boundaries.sf, layer.error.bool,
-  legend.error.bool, pretty_breaks.bool, title.chr, target.chr)
+  legend.error.bool, pretty_breaks.bool, title.chr, legend.chr, target.chr)
 }
 \arguments{
 \item{gridded.data.df}{A data frame obtained from a SpatialGridDataFrame containing data}
