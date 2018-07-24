@@ -454,7 +454,7 @@ static.ggmap <- function(
       probs = seq(0, 1, length.out = 11), na.rm = T))
     labels <- c()
     breaks <- unique(round(c(-60,
-      min(gridded.data.df[[target.chr]], na.rm = TRUE),
+      min(gridded.data.df[[target.chr]] - 1, na.rm = TRUE),
       quantiles,
       max(gridded.data.df[[target.chr]], na.rm = TRUE)), 1))
 
