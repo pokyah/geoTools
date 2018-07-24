@@ -67,18 +67,18 @@ build.SRTM.terrain.90m.ras.fun <- function(country_code.chr, NAME_1.chr=NULL, ag
 
   # inspired from https://www.gis-blog.com/download-srtm-for-an-entire-country/
   srtm_list  <- list()
-      for(i in 1:length(tiles)){
-        lon <- raster::extent(tiles[i,])[1]  + (raster::extent(tiles[i,])[2] - raster::extent(tiles[i,])[1]) / 2
-        lat <- raster::extent(tiles[i,])[3]  + (raster::extent(tiles[i,])[4] - raster::extent(tiles[i,])[3]) / 2
+  for(i in 1:length(tiles)){
+    lon <- raster::extent(tiles[i,])[1]  + (raster::extent(tiles[i,])[2] - raster::extent(tiles[i,])[1]) / 2
+    lat <- raster::extent(tiles[i,])[3]  + (raster::extent(tiles[i,])[4] - raster::extent(tiles[i,])[3]) / 2
 
 
-        tile <- raster::getData('SRTM', #data are downloaded from http://www.cgiar-csi.org/. See getData do of pokyah/raster repo on github
-                                lon=lon,
-                                lat=lat,
-                                download = TRUE,
-                                path = path.chr)
-        srtm_list[[i]] <- tile
-     }
+    tile <- raster::getData('SRTM', #data are downloaded from http://www.cgiar-csi.org/. See getData do of pokyah/raster repo on github
+      lon=lon,
+      lat=lat,
+      download = TRUE,
+      path = path.chr)
+    srtm_list[[i]] <- tile
+  }
 
   # Mosaic tiles
   srtm_list$fun <- mean
@@ -279,7 +279,7 @@ build_cover.sf.fun <- function(
 
   # legend of corine
   download.file("http://www.eea.europa.eu/data-and-maps/data/corine-land-cover-2006-raster-1/corine-land-cover-classes-and/clc_legend.csv/at_download/file",
-                destfile = "corine.legend.csv")
+    destfile = "corine.legend.csv")
   legend <- read.csv(file = "corine.legend.csv", header = TRUE, sep = ",")
   file.remove("corine.legend.csv")
 
@@ -343,7 +343,7 @@ get.points.cover_pct.fun <- function(
       reshape2::dcast(sid ~ CLASS, fun = sum)
 
     # https://stackoverflow.com/questions/5620885/how-does-one-reorder-columns-in-a-data-frame
-     return(data.df)
+    return(data.df)
   }
 
   # reproject the cover in the same CRS as grid and physical stations
@@ -386,7 +386,7 @@ get.points.cover_pct.fun <- function(
   # only keep relevant columns
   cover_rate.points.sf <- cover_rate.points.sf %>%
     dplyr::select(1,15:19)
- }
+}
 
 #' Build a responsive leaflet map displaying agromet AWS network data
 #' @author Thomas Goossens - pokyah.github.io
@@ -398,29 +398,29 @@ build_leaflet_template.fun <- function(records.sf){
 
   template.map <- leaflet::leaflet() %>%
     addProviderTiles(group = "Stamen",
-                     providers$Stamen.Toner,
-                     options = providerTileOptions(opacity = 0.25)
+      providers$Stamen.Toner,
+      options = providerTileOptions(opacity = 0.25)
     ) %>%
     addProviderTiles(group = "Satellite",
-                     providers$Esri.WorldImagery,
-                     options = providerTileOptions(opacity = 1)
+      providers$Esri.WorldImagery,
+      options = providerTileOptions(opacity = 1)
     ) %>%
     fitBounds(sf::st_bbox(records.sf)[[1]],
-              sf::st_bbox(records.sf)[[2]],
-              sf::st_bbox(records.sf)[[3]],
-              sf::st_bbox(records.sf)[[4]]
+      sf::st_bbox(records.sf)[[2]],
+      sf::st_bbox(records.sf)[[3]],
+      sf::st_bbox(records.sf)[[4]]
     ) %>%
     addLayersControl(baseGroups = c("Stamen", "Satellite"),
-                     overlayGroups = c("KNMI rain radar", "stations", "MNT", "slope", "aspect"),
-                     options = layersControlOptions(collapsed = TRUE)
+      overlayGroups = c("KNMI rain radar", "stations", "MNT", "slope", "aspect"),
+      options = layersControlOptions(collapsed = TRUE)
     ) %>%
     addEasyButton(easyButton(
       icon="fa-crosshairs", title="Locate Me",
       onClick=JS("function(btn, map){ map.locate({setView: true}); }"))) %>%
     htmlwidgets::onRender(paste0("
-                                 function(el, x) {
-                                 $('head').append(",responsiveness.chr,");
-                                 }"))
+      function(el, x) {
+      $('head').append(",responsiveness.chr,");
+      }"))
   return(template.map)
 }
 
@@ -533,12 +533,12 @@ static.ggmap <- function(
     # add boundaries layer
     ggplot2::geom_sf(data = boundaries.sf, ggplot2::aes(fill = ISO), fill = NA, color = "black", size = 0.6) +
     # add north symbol
-    ggsn::north(boundaries.sf, scale = 0.1, location = "bottomleft",
+    ggsn::north(data = boundaries.sf, scale = 0.1, location = "bottomleft",
       anchor = c(x = 780000, y = 550000), symbol = 12) +
     # add scalebar
-    ggsn::scalebar(boundaries.sf, dist = 50, dd2km = FALSE, model = "GRS80",
-      st.dist = 0.03, st.size = 4, box.fill = c("black", "white"),
-      box.color = "black", anchor = c(x = 700000, y = 520000)) +
+    ggsn::scalebar(data = boundaries.sf, dist = 50, dd2km = FALSE, model = "GRS80",
+      st.dist = 0.03, st.size = 4, anchor = c(x = 700000, y = 520000)) +
+
     # add copyright
     ggplot2::annotation_custom(grob = grid::textGrob("© CRA-W"),
       xmin = 790000, xmax = 790000, ymin = 520000, ymax = 520000) +
@@ -552,11 +552,9 @@ static.ggmap <- function(
       axis.ticks = ggplot2::element_line(color = NA),
       axis.text = ggplot2::element_text(colour = NA),
       legend.title = ggplot2::element_text(size = 12, face = "bold", vjust = 1),
-      legend.text = ggplot2::element_text(size = 11, margin(b = 1)),
+      legend.text = ggplot2::element_text(size = 11),
       legend.background = ggplot2::element_rect(fill = "transparent"),
       legend.position = c(0.12,0.38),
       legend.box = "horizontal")
   ggmap
 }
-
-
