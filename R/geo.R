@@ -433,6 +433,9 @@ build_leaflet_template.fun <- function(records.sf){
 #' @param pretty_breaks.bool A boolean specifying the type of legend you want. TRUE for pretty breaks, FALSE for quantile scale
 #' @param title.chr A character specifying the title you want for your map
 #' @param target.chr A character specifying the predicted parameter. One of "tsa", "hra" or "hct"
+#' @param nb_classes.num A numeric for the number of classes you want
+#' @param reverse_pal.bool A boolean if you want to reverse color palette. Default is TRUE, which means that 'red' is for high values and 'blue' for low values
+#' @param resolution.chr A character which specifies the resolution of the map
 #' @return a ggplot map object
 #' @export
 build.static.ggmap <- function(
@@ -443,7 +446,10 @@ build.static.ggmap <- function(
   pretty_breaks.bool,
   title.chr,
   legend.chr,
-  target.chr
+  target.chr,
+  nb_classes.num,
+  reverse_pal.bool = TRUE,
+  resolution.chr = NULL
 ){
 
   if (pretty_breaks.bool == TRUE) {
@@ -451,7 +457,7 @@ build.static.ggmap <- function(
     # prepare legend with pretty breaks
     # compute quantiles from predictions values
     quantiles <- unique(stats::quantile(gridded.data.df[[target.chr]],
-      probs = seq(0, 1, length.out = 11), na.rm = T))
+      probs = seq(0, 1, length.out = nb_classes.num), na.rm = T))
     labels <- c()
     breaks <- unique(round(c(min(gridded.data.df[[target.chr]] - 1, na.rm = TRUE),
       min(gridded.data.df[[target.chr]], na.rm = TRUE),
@@ -470,7 +476,7 @@ build.static.ggmap <- function(
   if (pretty_breaks.bool == FALSE) {
     # inspired by https://timogrossenbacher.ch/2016/12/beautiful-thematic-maps-with-ggplot2-only/
     quantiles <- unique(stats::quantile(gridded.data.df[[target.chr]],
-      probs = seq(0, 1, length.out = 11), na.rm = T))
+      probs = seq(0, 1, length.out = nb_classes.num), na.rm = T))
     labels <- c()
     labels <- paste0(labels, paste0(format(round(quantiles, 1), nsmall = 1),
       " – ",
@@ -482,6 +488,11 @@ build.static.ggmap <- function(
       include.lowest = T)
   }
 
+  pal = RColorBrewer::brewer.pal(n = length(labels_scale), name = "RdYlBu")
+  if(reverse_pal.bool == TRUE){
+    pal = rev(pal)
+  }
+
   ggmap <- ggplot2::ggplot(gridded.data.df) +
     # choose data to display on the layer
     ggplot2::geom_raster(mapping = ggplot2::aes(coords.x1, coords.x2, fill = response_quantiles), na.rm = TRUE, interpolate = T)
@@ -489,7 +500,7 @@ build.static.ggmap <- function(
   if (pretty_breaks.bool == TRUE) {
     ggmap <- ggmap +
       ggplot2::scale_fill_manual(
-        values = (RColorBrewer::brewer.pal(n = length(labels_scale), name = "RdYlBu")), # palette to use
+        values = pal, # palette to use
         breaks = rev(breaks_scale), # legend breaks
         name = legend.chr,
         drop = FALSE,
@@ -541,21 +552,26 @@ build.static.ggmap <- function(
 
     # add copyright
     ggplot2::annotation_custom(grob = grid::textGrob("© CRA-W"),
-      xmin = 790000, xmax = 790000, ymin = 520000, ymax = 520000) +
+      xmin = 790000, xmax = 790000, ymin = 520000, ymax = 520000)
     # display resolution of the map
-    ggplot2::annotation_custom(grob = grid::textGrob("Resolution : 1 km²"),
-      xmin = 558000, xmax = 558000, ymin = 671000, ymax = 671000) +
+    if(is.null(resolution.chr) == FALSE){
+      ggmap <- ggmap +
+        ggplot2::annotation_custom(grob = grid::textGrob(resolution.chr),
+                                   xmin = 558000, xmax = 558000, ymin = 671000, ymax = 671000)
+    }
+
     # parameters for visualization
-    ggplot2::theme(panel.background = ggplot2::element_rect(fill = "white"),
-      axis.title = ggplot2::element_text(color = NA),
-      panel.grid = ggplot2::element_line(color = NA),
-      axis.ticks = ggplot2::element_line(color = NA),
-      axis.text = ggplot2::element_text(colour = NA),
-      legend.title = ggplot2::element_text(size = 12, face = "bold", vjust = 1),
-      legend.text = ggplot2::element_text(size = 11),
-      legend.background = ggplot2::element_rect(fill = "transparent"),
-      legend.position = c(0.12,0.38),
-      legend.box = "horizontal")
+    ggmap <- ggmap +
+      ggplot2::theme(panel.background = ggplot2::element_rect(fill = "white"),
+                     axis.title = ggplot2::element_text(color = NA),
+                     panel.grid = ggplot2::element_line(color = NA),
+                     axis.ticks = ggplot2::element_line(color = NA),
+                     axis.text = ggplot2::element_text(colour = NA),
+                     legend.title = ggplot2::element_text(size = 12, face = "bold", vjust = 1),
+                     legend.text = ggplot2::element_text(size = 11),
+                     legend.background = ggplot2::element_rect(fill = "transparent"),
+                     legend.position = c(0.12,0.38),
+                     legend.box = "horizontal")
   ggmap
 }
 
