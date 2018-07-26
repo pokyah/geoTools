@@ -441,9 +441,9 @@ build_leaflet_template.fun <- function(records.sf){
 build.static.ggmap <- function(
   gridded.data.df,
   boundaries.sf,
-  layer.error.bool,
-  legend.error.bool,
-  pretty_breaks.bool,
+  layer.error.bool = FALSE,
+  legend.error.bool = FALSE,
+  pretty_breaks.bool = TRUE,
   title.chr,
   legend.chr,
   target.chr,
