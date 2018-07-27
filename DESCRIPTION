@@ -17,5 +17,5 @@ Imports: ggplot2,
     RColorBrewer,
     sf,
     leaflet
-DevPackage:
+Remotes:
   oswaldosantos/ggsn

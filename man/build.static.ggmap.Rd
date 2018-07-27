@@ -4,8 +4,10 @@
 \alias{build.static.ggmap}
 \title{Build a static map displaying predictions and their related error}
 \usage{
-build.static.ggmap(gridded.data.df, boundaries.sf, layer.error.bool,
-  legend.error.bool, pretty_breaks.bool, title.chr, legend.chr, target.chr)
+build.static.ggmap(gridded.data.df, boundaries.sf, layer.error.bool = FALSE,
+  legend.error.bool = FALSE, pretty_breaks.bool = TRUE, title.chr,
+  legend.chr, target.chr, nb_classes.num, reverse_pal.bool = TRUE,
+  resolution.chr = NULL)
 }
 \arguments{
 \item{gridded.data.df}{A data frame obtained from a SpatialGridDataFrame containing data}
@@ -21,6 +23,12 @@ build.static.ggmap(gridded.data.df, boundaries.sf, layer.error.bool,
 \item{title.chr}{A character specifying the title you want for your map}
 
 \item{target.chr}{A character specifying the predicted parameter. One of "tsa", "hra" or "hct"}
+
+\item{nb_classes.num}{A numeric for the number of classes you want}
+
+\item{reverse_pal.bool}{A boolean if you want to reverse color palette. Default is TRUE, which means that 'red' is for high values and 'blue' for low values}
+
+\item{resolution.chr}{A character which specifies the resolution of the map}
 }
 \value{
 a ggplot map object
