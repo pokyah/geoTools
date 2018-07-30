@@ -6,8 +6,8 @@
 \usage{
 build.static.ggmap(gridded.data.df, boundaries.sf, layer.error.bool = FALSE,
   legend.error.bool = FALSE, pretty_breaks.bool = TRUE, title.chr,
-  legend.chr, target.chr, nb_classes.num, reverse_pal.bool = TRUE,
-  resolution.chr = NULL)
+  legend.chr, target.chr, target.name, nb_classes.num,
+  reverse_pal.bool = TRUE, resolution.chr = NULL)
 }
 \arguments{
 \item{gridded.data.df}{A data frame obtained from a SpatialGridDataFrame containing data}
@@ -24,13 +24,13 @@ build.static.ggmap(gridded.data.df, boundaries.sf, layer.error.bool = FALSE,
 
 \item{target.chr}{A character specifying the name of the column containing the predicted parameter.}
 
+\item{target.name}{the type of weather param : tsa, plu, ind_plu, etc...}
+
 \item{nb_classes.num}{A numeric for the number of classes you want}
 
 \item{reverse_pal.bool}{A boolean if you want to reverse color palette. Default is TRUE, which means that 'red' is for high values and 'blue' for low values}
 
 \item{resolution.chr}{A character which specifies the resolution of the map}
-
-\item{target.name}{the type of weather param : tsa, plu, ind_plu, etc...}
 }
 \value{
 a ggplot map object

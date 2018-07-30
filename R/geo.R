@@ -448,6 +448,7 @@ build.static.ggmap <- function(
   title.chr,
   legend.chr,
   target.chr,
+  target.name,
   nb_classes.num,
   reverse_pal.bool = TRUE,
   resolution.chr = NULL
@@ -457,16 +458,16 @@ build.static.ggmap <- function(
   pal.name = "RdYlBu"
 
   if (target.name == "ind_plu") {
-    if (max(gridded.data.df$var1.pred) < 1) {
+    if (max(gridded.data.df[[target.chr]]) < 1) {
       pal.name = "Reds"
     }
-    if (min(gridded.data.df$var1.pred) > 1 ) {
+    if (min(gridded.data.df[[target.chr]]) > 1 ) {
       pal.name = "Blues"
     }
   }
 
   if (target.name == "defExHyd") {
-    if (max(gridded.data.df$var1.pred) < 0) {
+    if (max(gridded.data.df[[target.chr]]) < 0) {
       pal.name = "Reds"
     }
     if (min(gridded.data.df[[target.chr]]) > 0 ) {
