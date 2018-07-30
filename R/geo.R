@@ -662,3 +662,51 @@ leafletize <- function(data.sf, se.bool=TRUE){
 
   return(prediction.map)
 }
+
+
+#' @title Quickly build an interpolation grid with the desired cell size
+#' @author Thomas Goossens
+#' @param borders.sp A sp data frame containing the borders of the extension zone. Must be projected and not in geographic CRS
+#' @param cellsize The size of the cells of the desired interpolation grid expressed in the units of the map
+#' @return a sf interpolation grid
+#' @details https://stackoverflow.com/questions/43436466/create-grid-in-r-for-kriging-in-gstat/43444232
+#' @export
+quick.grid <- function(borders.sp, cellsize){
+  grd = sp::makegrid(x = borders.sp, cellsize = cellsize,
+    pretty = TRUE)
+  colnames(grd) <- c('x','y')
+  grd_pts = sp::SpatialPoints(coords = grd,
+    proj4string = sp::CRS(sp::proj4string(wallonia.sp)))
+  grid.sp = grd_pts[wallonia.sp, ]
+  grid.df = as.data.frame(grid.sp)
+  grid.grid <- grid.sp
+  sp::gridded(grid.grid) = TRUE
+  grid.sf = sf::st_as_sf(grid.sp)
+}
+
+#' @title polygonize the outputs of a spatial prediction to make an interactive leaflet map where each cell of the grid is clickable
+#' @param epsg a numeric specifying the CRS of the spatial predictions
+#' @param data a df containing the spatial prediction output
+#' @value a sf containing polygons centered around the prediction points
+#' @export
+polygonize <- function(data, epsg){
+  #data <- bind_cols(data.frame(o.grid), data)
+  data.sp <- data
+  coordinates(data.sp) <- ~x+y
+  gridded(data.sp) = TRUE
+  # making the gridded data a raster
+  grid.r <- raster::raster(data.sp, values = TRUE)
+  # convert raster to polygons
+  grid.sp = raster::rasterToPolygons(grid.r, dissolve = F)
+  # class(grid.sp) # SpatialPolygonsDataFrame
+  # converting to sf for later joining
+  grid.sf <- sf::st_as_sf(grid.sp)
+  sf::st_crs(grid.sf) <- epsg
+  # injecting the prediction and se data into the polygon grid doing a spatial join
+  # interpolated.sf <- st_join(grid.sf, interpolated.sf) %>% select(one_of(c("response", "se")))
+  data.pg.sf <- dplyr::bind_cols(grid.sf, sf::st_as_sf(data.sp))
+  # Do we have polygons ?
+}
+
+
+
