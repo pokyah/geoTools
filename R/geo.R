@@ -686,7 +686,7 @@ quick.grid <- function(borders.sp, cellsize){
   grid.df = as.data.frame(grid.sp)
   grid.grid <- grid.sp
   sp::gridded(grid.grid) = TRUE
-  grid.sf = sf::st_as_sf(grid.sp)
+  #grid.sf = sf::st_as_sf(grid.sp)
 }
 
 #' @title polygonize the outputs of a spatial prediction to make an interactive leaflet map where each cell of the grid is clickable
