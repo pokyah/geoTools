@@ -15,6 +15,6 @@ Imports: ggplot2,
     maptools,
     RColorBrewer,
     sf,
-    leaflet
-Remotes:
-  oswaldosantos/ggsn
+    leaflet,
+    ggsn
+Remotes: github::oswaldosantos/ggsn
