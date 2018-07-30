@@ -13,3 +13,6 @@ polygonize(data, epsg, coarse = NULL)
 
 \item{coarse}{a sp polygons of coarser resolution for quicker map rendering. Must be in same crs as data}
 }
+\value{
+a sf containing polygons centered around the prediction points
+}

@@ -720,7 +720,7 @@ quick.grid <- function(borders.sp, cellsize){
 #' @param epsg a numeric specifying the CRS of the spatial predictions
 #' @param data a df containing the spatial prediction output
 #' @param coarse a sp polygons of coarser resolution for quicker map rendering. Must be in same crs as data
-#' @value a sf containing polygons centered around the prediction points
+#' @return a sf containing polygons centered around the prediction points
 #' @export
 polygonize <- function(data, epsg, coarse=NULL){
   #data <- bind_cols(data.frame(o.grid), data)
