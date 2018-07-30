@@ -14,9 +14,6 @@ leafletize(data.sf, se.bool = TRUE)
 \value{
 a leaflet map object
 }
-\description{
-Build a leaflet map displaying predictions and their related error
-}
 \author{
 Thomas Goossens
 }
