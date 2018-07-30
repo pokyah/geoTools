@@ -445,7 +445,6 @@ build.static.ggmap <- function(
   layer.error.bool = FALSE,
   legend.error.bool = FALSE,
   pretty_breaks.bool = TRUE,
-  colorPal = "RdYlBu",
   title.chr,
   legend.chr,
   target.chr,
@@ -454,6 +453,32 @@ build.static.ggmap <- function(
   resolution.chr = NULL
 ){
 
+  ### color palette
+  pal.name = "RdYlBu"
+
+  if (target.chr == "ind_plu") {
+    if (max(gridded.data.df[[target.chr]]) < 1) {
+      pal.name = "Reds"
+    }
+    if (min(gridded.data.df[[target.chr]]) > 1 ) {
+      pal.name = "Blues"
+    }
+  }
+
+  if (target.chr == "defExHyd") {
+    if (max(gridded.data.df[[target.chr]]) < 0) {
+      pal.name = "Reds"
+    }
+    if (min(gridded.data.df[[target.chr]]) > 0 ) {
+      pal.name = "Blues"
+    }
+  }
+
+  if (reverse_pal.bool == TRUE) {
+    pal = rev(pal)
+  }
+
+  ### next
   if (pretty_breaks.bool == TRUE) {
     # inspired by https://timogrossenbacher.ch/2016/12/beautiful-thematic-maps-with-ggplot2-only/
     # prepare legend with pretty breaks
@@ -491,7 +516,7 @@ build.static.ggmap <- function(
       include.lowest = T)
   }
 
-  pal = RColorBrewer::brewer.pal(n = length(labels_scale), name = "RdYlBu")
+  pal = RColorBrewer::brewer.pal(n = length(labels_scale), name = pal.name)
   if (reverse_pal.bool == TRUE) {
     pal = rev(pal)
   }
@@ -526,7 +551,7 @@ build.static.ggmap <- function(
   # color palette with discrete classes with quantile scale
   if (pretty_breaks.bool == FALSE) {
     ggmap <- ggmap +
-      ggplot2::scale_fill_brewer(legend.chr, palette = "RdYlBu", direction = -1)
+      ggplot2::scale_fill_brewer(legend.chr, palette = pal.name, direction = -1)
   }
 
   if (layer.error.bool == TRUE) {
@@ -556,25 +581,25 @@ build.static.ggmap <- function(
     # add copyright
     ggplot2::annotation_custom(grob = grid::textGrob("© CRA-W"),
       xmin = 790000, xmax = 790000, ymin = 520000, ymax = 520000)
-    # display resolution of the map
-    if (is.null(resolution.chr) == FALSE) {
-      ggmap <- ggmap +
-        ggplot2::annotation_custom(grob = grid::textGrob(resolution.chr),
-                                   xmin = 558000, xmax = 558000, ymin = 671000, ymax = 671000)
-    }
-
-    # parameters for visualization
+  # display resolution of the map
+  if (is.null(resolution.chr) == FALSE) {
     ggmap <- ggmap +
-      ggplot2::theme(panel.background = ggplot2::element_rect(fill = "white"),
-                     axis.title = ggplot2::element_text(color = NA),
-                     panel.grid = ggplot2::element_line(color = NA),
-                     axis.ticks = ggplot2::element_line(color = NA),
-                     axis.text = ggplot2::element_text(colour = NA),
-                     legend.title = ggplot2::element_text(size = 12, face = "bold", vjust = 1),
-                     legend.text = ggplot2::element_text(size = 11),
-                     legend.background = ggplot2::element_rect(fill = "transparent"),
-                     legend.position = c(0.12,0.38),
-                     legend.box = "horizontal")
+      ggplot2::annotation_custom(grob = grid::textGrob(resolution.chr),
+        xmin = 558000, xmax = 558000, ymin = 671000, ymax = 671000)
+  }
+
+  # parameters for visualization
+  ggmap <- ggmap +
+    ggplot2::theme(panel.background = ggplot2::element_rect(fill = "white"),
+      axis.title = ggplot2::element_text(color = NA),
+      panel.grid = ggplot2::element_line(color = NA),
+      axis.ticks = ggplot2::element_line(color = NA),
+      axis.text = ggplot2::element_text(colour = NA),
+      legend.title = ggplot2::element_text(size = 12, face = "bold", vjust = 1),
+      legend.text = ggplot2::element_text(size = 11),
+      legend.background = ggplot2::element_rect(fill = "transparent"),
+      legend.position = c(0.12,0.38),
+      legend.box = "horizontal")
   ggmap
 }
 
@@ -716,6 +741,3 @@ polygonize <- function(data, epsg, coarse=NULL){
   # lowering the resolution for faster rendering
   data.pg.sf <- st_join(coarser, data.pg.sf)
 }
-
-
-
