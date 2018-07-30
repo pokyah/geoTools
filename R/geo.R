@@ -479,9 +479,6 @@ build.static.ggmap <- function(
     }
   }
 
-  if (reverse_pal.bool == TRUE) {
-    pal = rev(pal)
-  }
 
   ### next
   if (pretty_breaks.bool == TRUE) {
@@ -505,6 +502,7 @@ build.static.ggmap <- function(
     breaks_scale <- levels(gridded.data.df$response_quantiles)
     labels_scale <- rev(breaks_scale)
   }
+
 
   if (pretty_breaks.bool == FALSE) {
     # inspired by https://timogrossenbacher.ch/2016/12/beautiful-thematic-maps-with-ggplot2-only/
