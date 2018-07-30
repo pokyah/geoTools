@@ -22,13 +22,15 @@ build.static.ggmap(gridded.data.df, boundaries.sf, layer.error.bool = FALSE,
 
 \item{title.chr}{A character specifying the title you want for your map}
 
-\item{target.chr}{A character specifying the predicted parameter. One of "tsa", "hra" or "hct"}
+\item{target.chr}{A character specifying the name of the column containing the predicted parameter.}
 
 \item{nb_classes.num}{A numeric for the number of classes you want}
 
 \item{reverse_pal.bool}{A boolean if you want to reverse color palette. Default is TRUE, which means that 'red' is for high values and 'blue' for low values}
 
 \item{resolution.chr}{A character which specifies the resolution of the map}
+
+\item{target.name}{the type of weather param : tsa, plu, ind_plu, etc...}
 }
 \value{
 a ggplot map object

@@ -432,7 +432,8 @@ build_leaflet_template.fun <- function(records.sf){
 #' @param legend.error.bool A boolean specifying if you want to display the legend of the error layer
 #' @param pretty_breaks.bool A boolean specifying the type of legend you want. TRUE for pretty breaks, FALSE for quantile scale
 #' @param title.chr A character specifying the title you want for your map
-#' @param target.chr A character specifying the predicted parameter. One of "tsa", "hra" or "hct"
+#' @param target.chr A character specifying the name of the column containing the predicted parameter.
+#' @param target.name the type of weather param : tsa, plu, ind_plu, etc...
 #' @param nb_classes.num A numeric for the number of classes you want
 #' @param reverse_pal.bool A boolean if you want to reverse color palette. Default is TRUE, which means that 'red' is for high values and 'blue' for low values
 #' @param resolution.chr A character which specifies the resolution of the map
@@ -455,7 +456,7 @@ build.static.ggmap <- function(
   ### color palette
   pal.name = "RdYlBu"
 
-  if (target.chr == "ind_plu") {
+  if (target.name == "ind_plu") {
     if (max(gridded.data.df$var1.pred) < 1) {
       pal.name = "Reds"
     }
@@ -464,7 +465,7 @@ build.static.ggmap <- function(
     }
   }
 
-  if (target.chr == "defExHyd") {
+  if (target.name == "defExHyd") {
     if (max(gridded.data.df$var1.pred) < 0) {
       pal.name = "Reds"
     }
