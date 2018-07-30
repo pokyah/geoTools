@@ -576,13 +576,18 @@ build.static.ggmap <- function(
 }
 
 
-#' Build a leaflet map displaying predictions and their related error
+#' @title Build a leaflet map displaying predictions and their related error
 #' @author Thomas Goossens
 #' @param data.sf A sf data frame containing the spztilized data
 #' @param se.bool logial specifying wether to display or not the se
 #' @return a leaflet map object
+#' @import leaflet
 #' @export
 leafletize <- function(data.sf, se.bool=TRUE){
+
+  # reprojecting tin the proper CRS (EPSG = 4326)
+  data.sf <- sf::st_transform(data.sf, 4326)
+
   # to make the map responsive
   responsiveness.chr = "\'<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\'"
 
