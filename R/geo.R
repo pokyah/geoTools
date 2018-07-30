@@ -431,6 +431,7 @@ build_leaflet_template.fun <- function(records.sf){
 #' @param layer.error.bool A boolean specifying if you want to display the layer with error
 #' @param legend.error.bool A boolean specifying if you want to display the legend of the error layer
 #' @param pretty_breaks.bool A boolean specifying the type of legend you want. TRUE for pretty breaks, FALSE for quantile scale
+#' @param colorPal a charcater specifying the name of a RColorBrewer palette
 #' @param title.chr A character specifying the title you want for your map
 #' @param target.chr A character specifying the predicted parameter. One of "tsa", "hra" or "hct"
 #' @param nb_classes.num A numeric for the number of classes you want
@@ -444,6 +445,7 @@ build.static.ggmap <- function(
   layer.error.bool = FALSE,
   legend.error.bool = FALSE,
   pretty_breaks.bool = TRUE,
+  colorPal = "RdYlBu",
   title.chr,
   legend.chr,
   target.chr,
@@ -488,8 +490,8 @@ build.static.ggmap <- function(
       include.lowest = T)
   }
 
-  pal = RColorBrewer::brewer.pal(n = length(labels_scale), name = "RdYlBu")
-  if(reverse_pal.bool == TRUE){
+  pal = RColorBrewer::brewer.pal(n = length(labels_scale), name = colorPal)
+  if (reverse_pal.bool == TRUE) {
     pal = rev(pal)
   }
 
