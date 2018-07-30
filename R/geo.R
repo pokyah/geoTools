@@ -456,16 +456,16 @@ build.static.ggmap <- function(
   pal.name = "RdYlBu"
 
   if (target.chr == "ind_plu") {
-    if (max(gridded.data.df[[target.chr]]) < 1) {
+    if (max(gridded.data.df$var1.pred) < 1) {
       pal.name = "Reds"
     }
-    if (min(gridded.data.df[[target.chr]]) > 1 ) {
+    if (min(gridded.data.df$var1.pred) > 1 ) {
       pal.name = "Blues"
     }
   }
 
   if (target.chr == "defExHyd") {
-    if (max(gridded.data.df[[target.chr]]) < 0) {
+    if (max(gridded.data.df$var1.pred) < 0) {
       pal.name = "Reds"
     }
     if (min(gridded.data.df[[target.chr]]) > 0 ) {
