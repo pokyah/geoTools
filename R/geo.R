@@ -475,6 +475,7 @@ build.static.ggmap <- function(
     breaks_scale <- levels(gridded.data.df$response_quantiles)
     labels_scale <- rev(breaks_scale)
   }
+
   if (pretty_breaks.bool == FALSE) {
     # inspired by https://timogrossenbacher.ch/2016/12/beautiful-thematic-maps-with-ggplot2-only/
     quantiles <- unique(stats::quantile(gridded.data.df[[target.chr]],
@@ -490,7 +491,7 @@ build.static.ggmap <- function(
       include.lowest = T)
   }
 
-  pal = RColorBrewer::brewer.pal(n = length(labels_scale), name = colorPal)
+  pal = RColorBrewer::brewer.pal(n = length(labels_scale), name = "RdYlBu")
   if (reverse_pal.bool == TRUE) {
     pal = rev(pal)
   }
@@ -523,19 +524,19 @@ build.static.ggmap <- function(
       )
   }
   # color palette with discrete classes with quantile scale
-  if(pretty_breaks.bool == FALSE){
+  if (pretty_breaks.bool == FALSE) {
     ggmap <- ggmap +
       ggplot2::scale_fill_brewer(legend.chr, palette = "RdYlBu", direction = -1)
   }
 
-  if(layer.error.bool == TRUE){
+  if (layer.error.bool == TRUE) {
     ggmap <- ggmap +
       # display a layer with standard error
       ggplot2::geom_raster(ggplot2::aes(coords.x1, coords.x2, alpha = se), fill = "white", na.rm = TRUE, interpolate = TRUE) +
       # whitening it
       ggplot2::scale_alpha_continuous("Standard\nError",range = c(0.1,1), guide = legend.error.bool)
     # order the two legends if they both are displayed
-    if(legend.error.bool == TRUE){
+    if (legend.error.bool == TRUE) {
       ggmap <- ggmap + ggplot2::guides(fill = ggplot2::guide_legend(order = 1),
         alpha = ggplot2::guide_legend(order = 0))
     }
@@ -556,7 +557,7 @@ build.static.ggmap <- function(
     ggplot2::annotation_custom(grob = grid::textGrob("© CRA-W"),
       xmin = 790000, xmax = 790000, ymin = 520000, ymax = 520000)
     # display resolution of the map
-    if(is.null(resolution.chr) == FALSE){
+    if (is.null(resolution.chr) == FALSE) {
       ggmap <- ggmap +
         ggplot2::annotation_custom(grob = grid::textGrob(resolution.chr),
                                    xmin = 558000, xmax = 558000, ymin = 671000, ymax = 671000)
