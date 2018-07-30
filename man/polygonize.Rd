@@ -4,10 +4,12 @@
 \alias{polygonize}
 \title{polygonize the outputs of a spatial prediction to make an interactive leaflet map where each cell of the grid is clickable}
 \usage{
-polygonize(data, epsg)
+polygonize(data, epsg, coarse = NULL)
 }
 \arguments{
 \item{data}{a df containing the spatial prediction output}
 
 \item{epsg}{a numeric specifying the CRS of the spatial predictions}
+
+\item{coarse}{a sp polygons of coarser resolution for quicker map rendering. Must be in same crs as data}
 }

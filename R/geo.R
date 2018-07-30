@@ -692,9 +692,10 @@ quick.grid <- function(borders.sp, cellsize){
 #' @title polygonize the outputs of a spatial prediction to make an interactive leaflet map where each cell of the grid is clickable
 #' @param epsg a numeric specifying the CRS of the spatial predictions
 #' @param data a df containing the spatial prediction output
+#' @param coarse a sp polygons of coarser resolution for quicker map rendering. Must be in same crs as data
 #' @value a sf containing polygons centered around the prediction points
 #' @export
-polygonize <- function(data, epsg){
+polygonize <- function(data, epsg, coarse=NULL){
   #data <- bind_cols(data.frame(o.grid), data)
   data.sp <- data
   coordinates(data.sp) <- ~x+y
@@ -703,14 +704,14 @@ polygonize <- function(data, epsg){
   grid.r <- raster::raster(data.sp, values = TRUE)
   # convert raster to polygons
   grid.sp = raster::rasterToPolygons(grid.r, dissolve = F)
-  # class(grid.sp) # SpatialPolygonsDataFrame
   # converting to sf for later joining
   grid.sf <- sf::st_as_sf(grid.sp)
   sf::st_crs(grid.sf) <- epsg
   # injecting the prediction and se data into the polygon grid doing a spatial join
   # interpolated.sf <- st_join(grid.sf, interpolated.sf) %>% select(one_of(c("response", "se")))
   data.pg.sf <- dplyr::bind_cols(grid.sf, sf::st_as_sf(data.sp))
-  # Do we have polygons ?
+  # lowering the resolution for faster rendering
+  data.pg.sf <- st_join(coarser, data.pg.sf)
 }
 
 
