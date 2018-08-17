@@ -17,4 +17,5 @@ Imports: ggplot2,
     sf,
     leaflet,
     ggsn
-Remotes: github::oswaldosantos/ggsn
+Remotes: github::oswaldosantos/ggsn,
+  tidyverse/ggplot2
